@@ -9,15 +9,16 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class SqlHelper extends SQLiteOpenHelper {
 
-    String sqlTable = "CREATE TABLE Stations (" +
+    String sqlStation = "CREATE TABLE Stations (" +
             "ID INTEGER PRIMARY KEY AUTOINCREMENT, "+
             "Name TEXT, " +
-            "Location TEXT, " +
-            "Frequency TEXT, " +
-            "North_limit DOUBLE, " +
-            "West_limit DOUBLE, " +
-            "South_limit DOUBLE, " +
-            "East_limit DOUBLE);";
+            "Description TEXT);";
+
+    private String sqlInsert(String name, String desc){
+
+        return "INSERT INTO Stations (ID, Name, Description)" +
+                "VALUES(null, '" + name + "', '" + desc + "')";
+    }
 
     public SqlHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
@@ -25,7 +26,9 @@ public class SqlHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-
+        db.execSQL(sqlStation);
+        db.execSQL(sqlInsert("Bío Bío La Radio", ""));
+        db.execSQL(sqlInsert("ADN Radio", ""));
     }
 
     @Override

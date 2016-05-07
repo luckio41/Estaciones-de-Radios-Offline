@@ -1,15 +1,12 @@
 package cl.luckio.estacionesderadiosoffline;
 
 import android.app.Activity;
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import java.util.List;
 
 /**
  * Created by Luckio on 03/05/2016.
@@ -27,7 +24,7 @@ public class RadiosListAdapter extends ArrayAdapter<String>{
         this.integers = integers;
     }
 
-    public View getView(int posicion,View view, ViewGroup parent){
+    public View getView(int posicion, View view, ViewGroup parent){
 
         LayoutInflater inflater=context.getLayoutInflater();
         View rowView=inflater.inflate(R.layout.lista_radio, null, true);
@@ -38,7 +35,7 @@ public class RadiosListAdapter extends ArrayAdapter<String>{
 
         txtTitle.setText(itemname[posicion]);
         imageView.setImageResource(integers[posicion]);
-        etxDescripcion.setText("Description "+itemname[posicion]);
+        etxDescripcion.setText("Descripción "+itemname[posicion]);
 
         return rowView;
     }
