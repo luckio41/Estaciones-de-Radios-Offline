@@ -24,18 +24,18 @@ public class RadiosListAdapter extends ArrayAdapter<String>{
         this.integers = integers;
     }
 
-    public View getView(int posicion, View view, ViewGroup parent){
+    public View getView(int position, View view, ViewGroup parent){
 
         LayoutInflater inflater=context.getLayoutInflater();
         View rowView=inflater.inflate(R.layout.lista_radio, null, true);
 
         TextView txtTitle = (TextView) rowView.findViewById(R.id.texto_principal);
         ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);
-        TextView etxDescripcion = (TextView) rowView.findViewById(R.id.texto_secundario);
+        TextView etxDescription = (TextView) rowView.findViewById(R.id.texto_secundario);
 
-        txtTitle.setText(itemname[posicion]);
-        imageView.setImageResource(integers[posicion]);
-        etxDescripcion.setText("Descripción "+itemname[posicion]);
+        txtTitle.setText(itemname[position]);
+        imageView.setImageResource(integers[position]);
+        etxDescription.setText("Descripción "+itemname[position]);
 
         return rowView;
     }

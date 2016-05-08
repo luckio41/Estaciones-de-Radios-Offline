@@ -19,16 +19,22 @@ public class SqlHelper extends SQLiteOpenHelper {
             "ID_Stations INTEGER, " +
             "Name_city TEXT, " +
             "Frequency TEXT, " +
-            "North TEXT, " +
-            "East TEXT, " +
-            "South TEXT, " +
-            "West TEXT, " +
+            "North DOUBLE, " +
+            "East DOUBLE, " +
+            "South DOUBLE, " +
+            "West DOUBLE, " +
             "FOREIGN KEY(ID_Stations) REFERENCES Stations(ID));";
 
-    private String sqlInsert(String name, String desc){
+    private String sqlInsertStatios(String name, String desc){
 
         return "INSERT INTO Stations (ID, Name, Description)" +
                 "VALUES(null, '" + name + "', '" + desc + "')";
+    }
+
+    private String sqlInsertCities(int idStations, String name, String frequency, double north, double east, double south, double west){
+
+        return "INSERT INTO Cities (ID_Cities, ID_Stations, Name_city, Frequency, North, East, South, West)" +
+                "VALUES (null, "+idStations+", '"+name+"', '"+frequency+"', "+north+", "+east+", "+south+", "+west+")";
     }
 
     public SqlHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
@@ -42,8 +48,11 @@ public class SqlHelper extends SQLiteOpenHelper {
         db.execSQL(sqlCities);
 
         // Populate table "Stations"
-        db.execSQL(sqlInsert("Bío Bío La Radio", ""));
-        db.execSQL(sqlInsert("ADN Radio", ""));
+        db.execSQL(sqlInsertStatios("Bío Bío La Radio", ""));
+        db.execSQL(sqlInsertStatios("ADN Radio", ""));
+
+        // Populate table "Cities"
+        db.execSQL(sqlInsertCities(1, "Concepción y Talcahuano", "98.1 f.m. y 620 a.m.", -36.376573, -72.665415, -36.986187, -73.216974));
     }
 
     @Override

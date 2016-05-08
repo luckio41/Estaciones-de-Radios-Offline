@@ -13,7 +13,17 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/tvCoordinates"
+        android:id="@+id/tvCity"
+        android:textSize="24dp"
+        android:text=""
+        android:textAlignment="center"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvFrequency"
+        android:textSize="30dp"
+        android:text="0"
         android:textAlignment="center"/>
 
 </LinearLayout>

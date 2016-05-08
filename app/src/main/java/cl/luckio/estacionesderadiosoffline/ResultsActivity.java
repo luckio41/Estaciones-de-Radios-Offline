@@ -4,6 +4,8 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -12,13 +14,23 @@ import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 public class ResultsActivity extends AppCompatActivity {
 
-    private TextView tvCoordinates;
+    private TextView tvCity;
+    private TextView tvFrequency;
     private LocationManager locationManager;
     private LocationListener locationListener;
+    private SqlHelper sqlHelper;
+    private SQLiteDatabase db;
+
+    private String nameCity;
+    private String frequency;
+
+    private double latitude;
+    private double longitude;
 
     @TargetApi(Build.VERSION_CODES.M)
     @Override
@@ -27,12 +39,53 @@ public class ResultsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_results);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        tvCoordinates = (TextView) findViewById(R.id.tvCoordinates);
+        Bundle extras = getIntent().getExtras();
+        latitude = extras.getDouble("latitude");
+        longitude = extras.getDouble("longitude");
+
+        tvCity = (TextView) findViewById(R.id.tvCity);
+        tvFrequency = (TextView) findViewById(R.id.tvFrequency);
+
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        sqlHelper = new SqlHelper(this, "ESTACIONESDB", null, 1);
+        db = sqlHelper.getReadableDatabase();
+
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                tvCoordinates.setText("Latitud: " + location.getLatitude() + " Longitud: " + location.getLongitude());
+
+                if(latitude > 0)
+                    latitude = latitude;
+                else
+                    latitude = location.getLatitude();
+
+                if(longitude > 0)
+                    longitude = longitude;
+                else
+                    longitude = location.getLongitude();
+
+                if(db != null){
+                    String sql = "SELECT c.Name_city, c.Frequency FROM Cities c " +
+                            "INNER JOIN Stations s " +
+                            "ON (c.ID_Cities = s.ID) " +
+                            "WHERE "+ latitude +" <= c.North " +
+                            "AND "+ latitude +" >= c.South " +
+                            "AND "+ longitude +" >= c.West " +
+                            "AND "+ longitude +" <= c.East";
+
+                    Cursor c = db.rawQuery(sql, null);
+
+                    if (c.moveToFirst()){
+                        for (int i = 0; i < c.getCount() ; i ++) {
+                            nameCity = c.getString(0).toString();
+                            frequency = c.getString(1).toString();
+                            c.moveToNext();
+                        }
+                    }
+
+                    tvCity.setText(nameCity);
+                    tvFrequency.setText(frequency);
+                }
             }
 
             @Override
