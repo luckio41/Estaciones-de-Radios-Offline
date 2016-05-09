@@ -23,7 +23,14 @@
         android:layout_height="wrap_content"
         android:id="@+id/tvFrequency"
         android:textSize="30dp"
-        android:text="0"
+        android:text=""
         android:textAlignment="center"/>
+
+    <ProgressBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="?android:attr/progressBarStyleLarge"
+        android:id="@+id/progressBar"
+        android:progressDrawable="@drawable/circular_progress_bar" />
 
 </LinearLayout>

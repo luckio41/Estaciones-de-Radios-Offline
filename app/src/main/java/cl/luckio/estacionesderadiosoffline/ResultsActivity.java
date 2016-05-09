@@ -14,7 +14,8 @@ import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class ResultsActivity extends AppCompatActivity {
@@ -25,12 +26,11 @@ public class ResultsActivity extends AppCompatActivity {
     private LocationListener locationListener;
     private SqlHelper sqlHelper;
     private SQLiteDatabase db;
-
     private String nameCity;
     private String frequency;
-
     private double latitude;
     private double longitude;
+    private ProgressBar progressBar;
 
     @TargetApi(Build.VERSION_CODES.M)
     @Override
@@ -45,6 +45,8 @@ public class ResultsActivity extends AppCompatActivity {
 
         tvCity = (TextView) findViewById(R.id.tvCity);
         tvFrequency = (TextView) findViewById(R.id.tvFrequency);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.VISIBLE);
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         sqlHelper = new SqlHelper(this, "ESTACIONESDB", null, 1);
@@ -85,6 +87,7 @@ public class ResultsActivity extends AppCompatActivity {
 
                     tvCity.setText(nameCity);
                     tvFrequency.setText(frequency);
+                    progressBar.setVisibility(View.GONE);
                 }
             }
 
