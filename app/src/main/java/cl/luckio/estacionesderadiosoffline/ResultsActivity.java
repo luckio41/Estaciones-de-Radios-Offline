@@ -31,6 +31,7 @@ public class ResultsActivity extends AppCompatActivity {
     private double latitude;
     private double longitude;
     private ProgressBar progressBar;
+    private TextView tvInfo;
 
     @TargetApi(Build.VERSION_CODES.M)
     @Override
@@ -47,6 +48,7 @@ public class ResultsActivity extends AppCompatActivity {
         tvFrequency = (TextView) findViewById(R.id.tvFrequency);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         progressBar.setVisibility(View.VISIBLE);
+        tvInfo = (TextView) findViewById(R.id.tvInfo);
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         sqlHelper = new SqlHelper(this, "ESTACIONESDB", null, 1);
@@ -88,6 +90,8 @@ public class ResultsActivity extends AppCompatActivity {
                     tvCity.setText(nameCity);
                     tvFrequency.setText(frequency);
                     progressBar.setVisibility(View.GONE);
+                    tvInfo.setText("");
+
                 }
             }
 

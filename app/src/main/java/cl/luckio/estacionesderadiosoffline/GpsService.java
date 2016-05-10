@@ -39,11 +39,6 @@ public class GpsService extends Service implements LocationListener {
         getLocation();
     }
 
-    public void setView(View view) {
-        tvCoordinates = (TextView) view;
-        tvCoordinates.setText("Lat: " + lat + " Len: " + len);
-    }
-
     public void getLocation() {
         try {
             locationManager = (LocationManager) this.ctx.getSystemService(LOCATION_SERVICE);

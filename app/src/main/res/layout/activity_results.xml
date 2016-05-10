@@ -33,4 +33,11 @@
         android:id="@+id/progressBar"
         android:progressDrawable="@drawable/circular_progress_bar" />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Buscando datos..."
+        android:textAlignment="center"
+        android:id="@+id/tvInfo"/>
+
 </LinearLayout>
