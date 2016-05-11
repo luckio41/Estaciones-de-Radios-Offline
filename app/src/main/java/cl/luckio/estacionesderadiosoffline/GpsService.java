@@ -47,9 +47,9 @@ public class GpsService extends Service implements LocationListener {
         }
 
         if (activeGps)
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                locationManager.requestLocationUpdates(locationManager.GPS_PROVIDER, 1000 * 60, 10, this);
-                location = locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
+            if ( ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED) {
+                locationManager.requestLocationUpdates(locationManager.NETWORK_PROVIDER, 1000 * 60, 10, this);
+                location = locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
                 lat = location.getLatitude();
                 len = location.getLongitude();
                 return;
