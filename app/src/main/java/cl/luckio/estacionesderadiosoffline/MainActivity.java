@@ -11,6 +11,9 @@ import android.location.LocationManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -95,6 +98,25 @@ public class MainActivity extends AppCompatActivity {
         lvRadios.setAdapter(adapter);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.action_acerca_de:
+                AcercaDe();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     private void ShowResults(int position, View view) {
         Intent i = new Intent(this, ResultsActivity.class);
 
@@ -112,5 +134,10 @@ public class MainActivity extends AppCompatActivity {
         i.putExtra("latitude", latitude);
         i.putExtra("longitude", longitude);
         startActivity(i);
+    }
+
+    public void AcercaDe(){
+        Intent intent = new Intent(this, AcercaDe.class);
+        startActivity(intent);
     }
 }

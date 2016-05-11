@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Estaciones de Radios Offline</string>
+    <string name="description">Estaciones de Radios Offline es una aplicación gratuita y de código abierto, su propósito es ayudar a los usuarios a encontrar sus estaciones de radio en lugares apartados de la ciudad
+    donde no se tenga acceso a internet, como largas carreteras.</string>
 </resources>
