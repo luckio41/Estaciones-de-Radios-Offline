@@ -36,6 +36,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/tvEmail" />
+        android:text="Escríbeme a soporte@luckio.cl y la agregaré"
+        android:autoLink="email" />
 
 </LinearLayout>

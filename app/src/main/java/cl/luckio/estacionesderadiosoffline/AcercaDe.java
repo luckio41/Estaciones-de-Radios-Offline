@@ -13,8 +13,5 @@ public class AcercaDe extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_acerca_de);
-
-        tvEmail = (TextView) findViewById(R.id.tvEmail);
-        tvEmail.setText(Html.fromHtml("Escríbeme a <a href=\"mailto:soporte@luckio.cl\">soporte@luckio.cl</a> y la agrego."));
     }
 }

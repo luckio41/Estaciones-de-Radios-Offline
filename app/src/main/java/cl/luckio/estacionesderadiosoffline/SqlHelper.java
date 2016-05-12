@@ -50,12 +50,16 @@ public class SqlHelper extends SQLiteOpenHelper {
         // Populate table "Stations"
         db.execSQL(sqlInsertStatios("Bío Bío La Radio", ""));
         db.execSQL(sqlInsertStatios("ADN Radio", ""));
+        db.execSQL(sqlInsertStatios("Digital FM", ""));
 
         // Populate table "Cities [Bio Bio]"
         db.execSQL(sqlInsertCities(1, "Concepción y Talcahuano", "98.1 fm - 620 am", -36.376573, -72.665415, -36.986187, -73.216974));
 
         // Populate table "Cities [ADN"
         db.execSQL(sqlInsertCities(2, "Concepción y Talcahuano", "104.1", -36.376573, -72.665415, -36.986187, -73.216974));
+
+        // Populate table "Cities [Digital FM"
+        db.execSQL(sqlInsertCities(2, "Concepción", "88.1", -36.376573, -72.665415, -36.986187, -73.216974));
     }
 
     @Override

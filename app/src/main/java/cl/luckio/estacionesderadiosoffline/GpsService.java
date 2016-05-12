@@ -25,7 +25,6 @@ public class GpsService extends Service implements LocationListener {
     double len;
     Location location;
     boolean activeGps;
-    TextView tvCoordinates;
     LocationManager locationManager;
 
     public GpsService() {
@@ -42,9 +41,8 @@ public class GpsService extends Service implements LocationListener {
     public void getLocation() {
         try {
             locationManager = (LocationManager) this.ctx.getSystemService(LOCATION_SERVICE);
-            activeGps = locationManager.isProviderEnabled(locationManager.GPS_PROVIDER);
-        } catch (Exception e) {
-        }
+            activeGps = locationManager.isProviderEnabled(locationManager.NETWORK_PROVIDER);
+        } catch (Exception e) {}
 
         if (activeGps)
             if ( ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED) {
