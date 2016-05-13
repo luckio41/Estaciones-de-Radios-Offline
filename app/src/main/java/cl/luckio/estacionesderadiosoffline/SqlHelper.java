@@ -25,6 +25,10 @@ public class SqlHelper extends SQLiteOpenHelper {
             "West DOUBLE, " +
             "FOREIGN KEY(ID_Stations) REFERENCES Stations(ID));";
 
+    String sqlDataTemp = "CREATE TABLE data_temp (" +
+            "Longitud DOUBLE, " +
+            "Latitud DOUBLE);";
+
     private String sqlInsertStatios(String name, String desc){
 
         return "INSERT INTO Stations (ID, Name, Description)" +

@@ -38,9 +38,6 @@ public class ResultsActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         _latitude = extras.getDouble("latitude");
         _longitude = extras.getDouble("longitude");
-
-        Toast.makeText(getApplicationContext(), "Re: " + String.valueOf(_latitude), Toast.LENGTH_SHORT).show();
-
         position = extras.getInt("position");
 
         tvCity = (TextView) findViewById(R.id.tvCity);
