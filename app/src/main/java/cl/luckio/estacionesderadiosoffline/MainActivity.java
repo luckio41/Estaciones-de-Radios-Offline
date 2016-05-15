@@ -41,6 +41,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Init SqlHelper
+        final SqlHelper sqlHelper = new SqlHelper(this, "ESTACIONESDB", null, 1);
+        final SQLiteDatabase db = sqlHelper.getWritableDatabase();
+
         // Location manager
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         locationManager.getAllProviders();
@@ -49,8 +53,12 @@ public class MainActivity extends AppCompatActivity {
             public void onLocationChanged(Location location) {
                 latitude = location.getLatitude();
                 longitude = location.getLongitude();
-                Toast.makeText(getApplicationContext(), String.valueOf(latitude), Toast.LENGTH_SHORT).show();
                 location.getProvider();
+
+                if(db != null) {
+                    String strUpdate = "UPDATE data_temp SET Latitud = "+latitude+", Longitud = "+longitude+ " WHERE rowid = 1;";
+                    db.execSQL(strUpdate);
+                }
             }
 
             @Override
@@ -79,11 +87,8 @@ public class MainActivity extends AppCompatActivity {
         }
         else {
             locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 0, locationListener);
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, locationListener);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60000, 0, locationListener);
         }
-
-        SqlHelper sqlHelper = new SqlHelper(this, "ESTACIONESDB", null, 1);
-        SQLiteDatabase db = sqlHelper.getReadableDatabase();
 
         if (db != null) {
             Cursor c = db.rawQuery("SELECT * FROM Stations", null);
@@ -122,6 +127,9 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_acerca_de:
                 AcercaDe();
                 return true;
+            case R.id.action_salir:
+                Salir();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -129,10 +137,28 @@ public class MainActivity extends AppCompatActivity {
 
     private void ShowResults(int position, View view) {
         Intent i = new Intent(this, ResultsActivity.class);
+        double _latitude = 0;
+        double _longitude = 0;
+
+        // Init SqlHelper
+        final SqlHelper sqlHelper = new SqlHelper(this, "ESTACIONESDB", null, 1);
+        final SQLiteDatabase db = sqlHelper.getReadableDatabase();
+
+        if (db != null) {
+            Cursor c = db.rawQuery("SELECT Latitud, Longitud FROM data_temp", null);
+
+            if (c.moveToFirst()) {
+                for (int x = 0; x < c.getCount(); x++) {
+                    _latitude = c.getDouble(0);
+                    _longitude = c.getDouble(1);
+                    c.moveToNext();
+                }
+            }
+        }
 
         i.putExtra("position", position);
-        i.putExtra("latitude", latitude);
-        i.putExtra("longitude", longitude);
+        i.putExtra("latitude", _latitude);
+        i.putExtra("longitude", _longitude);
         startActivity(i);
     }
 
@@ -141,27 +167,9 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-        locationManager.removeUpdates(locationListener);
+    public void Salir() {
+        this.finish();
+        System.exit(0);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{
-                    Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.INTERNET
-            }, 10);
-            return;
-        } else {
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 0, locationListener);
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, locationListener);
-        }
-    }
 }

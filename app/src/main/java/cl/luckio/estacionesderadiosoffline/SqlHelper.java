@@ -50,6 +50,11 @@ public class SqlHelper extends SQLiteOpenHelper {
         // Create tables
         db.execSQL(sqlStations);
         db.execSQL(sqlCities);
+        db.execSQL(sqlDataTemp);
+
+        // Populate table "data_temp"
+        db.execSQL("INSERT INTO data_temp (Longitud, Latitud) " +
+                "VALUES (0, 0);");
 
         // Populate table "Stations"
         db.execSQL(sqlInsertStatios("Bío Bío La Radio", ""));
