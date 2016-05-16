@@ -35,7 +35,7 @@ public class RadiosListAdapter extends ArrayAdapter<String>{
 
         txtTitle.setText(itemname[position]);
         imageView.setImageResource(integers[position]);
-        etxDescription.setText("Descripción "+itemname[position]);
+        etxDescription.setText("--");
 
         return rowView;
     }

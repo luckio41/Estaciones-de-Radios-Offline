@@ -33,6 +33,7 @@ public class ResultsActivity extends AppCompatActivity {
     private double _longitude;
     private int position;
     private ProgressBar progressBar;
+    private int idCity;
 
     @TargetApi(Build.VERSION_CODES.M)
     @Override
@@ -56,9 +57,11 @@ public class ResultsActivity extends AppCompatActivity {
         db = sqlHelper.getReadableDatabase();
 
         if(db != null) {
-            String sql = "SELECT c.Name_city, c.Frequency FROM Cities c " +
+            String sql = "SELECT c.ID_Cities, c.Name_city, f.Data_Frequency, s.Name FROM Frequency f " +
+                    "INNER JOIN Cities c " +
+                    "ON f.ID_City = c.ID_Cities " +
                     "INNER JOIN Stations s " +
-                    "ON (c.ID_Cities = s.ID) " +
+                    "ON f.ID_Station = s.ID " +
                     "WHERE s.ID = " + (position + 1) + " " +
                     "AND " + _latitude + " <= c.North " +
                     "AND " + _latitude + " >= c.South " +
@@ -69,9 +72,18 @@ public class ResultsActivity extends AppCompatActivity {
 
             if (c.moveToFirst()) {
                 for (int i = 0; i < c.getCount(); i++) {
-                    imgCity.setImageResource(R.drawable.concepcion);
-                    nameCity = c.getString(0).toString();
-                    frequency = c.getString(1).toString();
+
+                    idCity = c.getInt(0);
+                    nameCity = c.getString(1).toString();
+                    frequency = c.getString(2).toString();
+
+                    if(idCity == 1){
+                        imgCity.setImageResource(R.drawable.concepcion);
+                    }
+                    if(idCity == 2){
+                        imgCity.setImageResource(R.drawable.chillan);
+                    }
+
                     c.moveToNext();
                 }
             }
