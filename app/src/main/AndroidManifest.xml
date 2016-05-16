@@ -25,8 +25,6 @@
         <activity
             android:name=".AcercaDe"
             android:parentActivityName=".MainActivity" />
-        <activity android:name=".Launcher" >
-        </activity>
     </application>
 
 </manifest>

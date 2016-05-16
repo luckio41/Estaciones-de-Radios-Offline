@@ -25,6 +25,7 @@ public class ResultsActivity extends AppCompatActivity {
     private TextView tvCity;
     private TextView tvFrequency;
     private ImageView imgCity;
+    private ImageView imgRadio;
     private SqlHelper sqlHelper;
     private SQLiteDatabase db;
     private String nameCity;
@@ -34,6 +35,7 @@ public class ResultsActivity extends AppCompatActivity {
     private int position;
     private ProgressBar progressBar;
     private int idCity;
+    private int idRadio;
 
     @TargetApi(Build.VERSION_CODES.M)
     @Override
@@ -51,13 +53,14 @@ public class ResultsActivity extends AppCompatActivity {
         tvFrequency = (TextView) findViewById(R.id.tvFrequency);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         imgCity = (ImageView) findViewById(R.id.imgCity);
+        imgRadio = (ImageView) findViewById(R.id.imgRadio);
         progressBar.setVisibility(View.VISIBLE);
 
         sqlHelper = new SqlHelper(this, "ESTACIONESDB", null, 1);
         db = sqlHelper.getReadableDatabase();
 
         if(db != null) {
-            String sql = "SELECT c.ID_Cities, c.Name_city, f.Data_Frequency, s.Name FROM Frequency f " +
+            String sql = "SELECT c.ID_Cities, c.Name_city, f.Data_Frequency, s.Name, s.ID FROM Frequency f " +
                     "INNER JOIN Cities c " +
                     "ON f.ID_City = c.ID_Cities " +
                     "INNER JOIN Stations s " +
@@ -74,8 +77,22 @@ public class ResultsActivity extends AppCompatActivity {
                 for (int i = 0; i < c.getCount(); i++) {
 
                     idCity = c.getInt(0);
-                    nameCity = c.getString(1).toString();
+                    nameCity = c.getString(1).toUpperCase().toString();
                     frequency = c.getString(2).toString();
+                    idRadio = c.getInt(4);
+
+                    switch (idRadio) {
+                        case 1:
+                            imgRadio.setImageResource(R.drawable.biobio);
+                            break;
+                        case 2:
+                            imgRadio.setImageResource(R.drawable.adn);
+                            break;
+                        case 3:
+                            imgRadio.setImageResource(R.drawable.digital);
+                            break;
+                    }
+
 
                     if(idCity == 1){
                         imgCity.setImageResource(R.drawable.concepcion);

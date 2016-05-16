@@ -19,7 +19,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -89,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
         }
         else {
             locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 35000, 0, locationListener);
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60000, 0, locationListener);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 35000, 0, locationListener);
         }
 
         if (db != null) {
