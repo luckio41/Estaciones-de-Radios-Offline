@@ -23,8 +23,7 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="5dp"
-            android:padding="2dp"
-            android:textColor="#489e37" />
+            android:padding="2dp" />
         <TextView
             android:id="@+id/texto_secundario"
             android:layout_width="wrap_content"

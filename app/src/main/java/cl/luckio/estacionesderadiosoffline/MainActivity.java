@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private LocationListener locationListener;
     private ListView lvRadios;
     private String listaRadios[];
+    private String status[];
     private Integer[] imgid = {
             R.drawable.biobio,
             R.drawable.adn,
@@ -60,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
                     String strUpdate = "UPDATE data_temp SET Latitud = "+latitude+", Longitud = "+longitude+ " WHERE rowid = 1;";
                     db.execSQL(strUpdate);
                 }
+
+                updateCampos(db);
             }
 
             @Override
@@ -91,19 +94,42 @@ public class MainActivity extends AppCompatActivity {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 35000, 0, locationListener);
         }
 
+        updateCampos(db);
+    }
+
+    private void updateCampos(SQLiteDatabase db) {
         if (db != null) {
             Cursor c = db.rawQuery("SELECT * FROM Stations", null);
+            Cursor c_ = db.rawQuery("SELECT Latitud, Longitud FROM data_temp", null);
+            String txtStatus;
+
             listaRadios = new String[c.getCount()];
+            status = new String[c.getCount()];
+            ResultsHelper resultsHelper;
 
             if (c.moveToFirst()) {
                 for (int i = 0; i < c.getCount(); i++) {
                     listaRadios[i] = c.getString(1);
+
+                    if (c_.moveToFirst()) {
+                        for (int z = 0; z < c_.getCount(); z++) {
+                            resultsHelper = new ResultsHelper(this, c_.getDouble(0), c_.getDouble(1), c.getInt(0));
+                            if(resultsHelper.calcularStatus() == 1) {
+                                txtStatus = "al aire";
+                            }
+                            else{
+                                txtStatus = "fuera de alcance";
+                            }
+                            status[i] = txtStatus;
+                            c_.moveToNext();
+                        }
+                    }
                     c.moveToNext();
                 }
             }
         }
 
-        RadiosListAdapter adapter = new RadiosListAdapter(this, listaRadios, imgid);
+        RadiosListAdapter adapter = new RadiosListAdapter(this, listaRadios, status, imgid);
         lvRadios = (ListView) findViewById(R.id.lvRadios);
         lvRadios.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -111,6 +137,7 @@ public class MainActivity extends AppCompatActivity {
                 ShowResults(position, view);
             }
         });
+
         lvRadios.setAdapter(adapter);
     }
 
