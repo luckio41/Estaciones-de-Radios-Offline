@@ -1,6 +1,7 @@
 package cl.luckio.estacionesderadiosoffline;
 
 import android.Manifest;
+import android.app.SearchManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -11,16 +12,19 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
 
     private LocationManager locationManager;
     private LocationListener locationListener;
@@ -37,15 +41,19 @@ public class MainActivity extends AppCompatActivity {
     public double longitude;
 
     private ListView lista;
+    // Init SqlHelper
+    private SqlHelper sqlHelper;
+    private SQLiteDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Init SqlHelper
-        final SqlHelper sqlHelper = new SqlHelper(this, "ESTACIONESDB", null, 1);
-        final SQLiteDatabase db = sqlHelper.getWritableDatabase();
+        sqlHelper = new SqlHelper(this, "ESTACIONESDB", null, 1);
+        db = sqlHelper.getWritableDatabase();
+
+        updateCampos(db);
 
         // Location manager
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -57,12 +65,12 @@ public class MainActivity extends AppCompatActivity {
                 longitude = location.getLongitude();
                 location.getProvider();
 
-                if(db != null) {
-                    String strUpdate = "UPDATE data_temp SET Latitud = "+latitude+", Longitud = "+longitude+ " WHERE rowid = 1;";
+                if (db != null) {
+                    String strUpdate = "UPDATE data_temp SET Latitud = " + latitude + ", Longitud = " + longitude + " WHERE rowid = 1;";
                     db.execSQL(strUpdate);
+                    updateCampos(db);
                 }
 
-                updateCampos(db);
             }
 
             @Override
@@ -88,13 +96,10 @@ public class MainActivity extends AppCompatActivity {
                     Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.INTERNET
             }, 10);
             return;
+        } else {
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 15000, 15, locationListener);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 15000, 15, locationListener);
         }
-        else {
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 35000, 0, locationListener);
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 35000, 0, locationListener);
-        }
-
-        updateCampos(db);
     }
 
     private void updateCampos(SQLiteDatabase db) {
@@ -114,10 +119,52 @@ public class MainActivity extends AppCompatActivity {
                     if (c_.moveToFirst()) {
                         for (int z = 0; z < c_.getCount(); z++) {
                             resultsHelper = new ResultsHelper(this, c_.getDouble(0), c_.getDouble(1), c.getInt(0));
-                            if(resultsHelper.calcularStatus() == 1) {
+                            if (resultsHelper.calcularStatus() == 1) {
                                 txtStatus = "al aire";
+                            } else {
+                                txtStatus = "fuera de alcance";
                             }
-                            else{
+                            status[i] = txtStatus;
+                            c_.moveToNext();
+                        }
+                    }
+                    c.moveToNext();
+                }
+            }
+        }
+
+        RadiosListAdapter adapter = new RadiosListAdapter(this, listaRadios, status, imgid);
+        lvRadios = (ListView) findViewById(R.id.lvRadios);
+        lvRadios.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ShowResults(position, view);
+            }
+        });
+
+        lvRadios.setAdapter(adapter);
+    }
+
+    private void searchCampos(SQLiteDatabase db, String text) {
+        if (db != null) {
+            Cursor c = db.rawQuery("SELECT * FROM Stations WHERE Name LIKE '%" + text + "%'", null);
+            Cursor c_ = db.rawQuery("SELECT Latitud, Longitud FROM data_temp", null);
+            String txtStatus;
+
+            listaRadios = new String[c.getCount()];
+            status = new String[c.getCount()];
+            ResultsHelper resultsHelper;
+
+            if (c.moveToFirst()) {
+                for (int i = 0; i < c.getCount(); i++) {
+                    listaRadios[i] = c.getString(1);
+
+                    if (c_.moveToFirst()) {
+                        for (int z = 0; z < c_.getCount(); z++) {
+                            resultsHelper = new ResultsHelper(this, c_.getDouble(0), c_.getDouble(1), c.getInt(0));
+                            if (resultsHelper.calcularStatus() == 1) {
+                                txtStatus = "al aire";
+                            } else {
                                 txtStatus = "fuera de alcance";
                             }
                             status[i] = txtStatus;
@@ -145,6 +192,12 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
+        SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
+        //searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setOnQueryTextListener(this);
+
         return true;
     }
 
@@ -168,10 +221,6 @@ public class MainActivity extends AppCompatActivity {
         double _latitude = 0;
         double _longitude = 0;
 
-        // Init SqlHelper
-        final SqlHelper sqlHelper = new SqlHelper(this, "ESTACIONESDB", null, 1);
-        final SQLiteDatabase db = sqlHelper.getReadableDatabase();
-
         if (db != null) {
             Cursor c = db.rawQuery("SELECT Latitud, Longitud FROM data_temp", null);
 
@@ -190,7 +239,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(i);
     }
 
-    public void AcercaDe(){
+    public void AcercaDe() {
         Intent intent = new Intent(this, AcercaDe.class);
         startActivity(intent);
     }
@@ -250,5 +299,16 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }).create();
         dialog.show();
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        searchCampos(db, newText);
+        return false;
     }
 }
