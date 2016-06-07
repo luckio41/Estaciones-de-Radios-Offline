@@ -11,11 +11,12 @@ public class SqlHelper extends SQLiteOpenHelper {
 
     String sqlStations = "CREATE TABLE Stations (" +
             "ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            "Image VARCHAR, " +
             "Name TEXT);";
 
     String sqlCities = "CREATE TABLE Cities (" +
             "ID_Cities INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            "Name_city TEXT, " +
+            "Name_city VARCHAR, " +
             "North DOUBLE, " +
             "East DOUBLE, " +
             "South DOUBLE, " +
@@ -33,10 +34,10 @@ public class SqlHelper extends SQLiteOpenHelper {
             "Longitud DOUBLE, " +
             "Latitud DOUBLE);";
 
-    private String sqlInsertStatios(String name){
+    private String sqlInsertStatios(String image, String name){
 
-        return "INSERT INTO Stations (ID, Name)" +
-                "VALUES(null, '" + name + "')";
+        return "INSERT INTO Stations (ID, Image, Name)" +
+                "VALUES(null, '"+ image +"', '" + name + "')";
     }
 
     private String sqlInsertCities(String name, double north, double east, double south, double west){
@@ -68,9 +69,9 @@ public class SqlHelper extends SQLiteOpenHelper {
                 "VALUES (0, 0);");
 
         // Populate table "Stations"
-        db.execSQL(sqlInsertStatios("Bío Bío La Radio"));
-        db.execSQL(sqlInsertStatios("ADN Radio"));
-        db.execSQL(sqlInsertStatios("Digital FM"));
+        db.execSQL(sqlInsertStatios("biobio", "Bío Bío La Radio"));
+        db.execSQL(sqlInsertStatios("adn", "ADN Radio"));
+        db.execSQL(sqlInsertStatios("digital", "Digital FM"));
 
         // Populate table "Cities"
         db.execSQL(sqlInsertCities("Concepción y Talcahuano", -36.376573, -72.665415, -36.986187, -73.216974));

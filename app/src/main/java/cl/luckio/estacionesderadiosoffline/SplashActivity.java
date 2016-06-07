@@ -37,7 +37,7 @@ public class SplashActivity extends AppCompatActivity {
                 .withFullScreen()
                 .withTargetActivity(MainActivity.class)
                 .withSplashTimeOut(4000)
-                .withBackgroundResource(android.R.color.holo_red_light)
+                .withBackgroundResource(android.R.color.holo_orange_dark)
                 .withHeaderText("")
                 .withFooterText("Luckio Software 2016")
                 .withBeforeLogoText("")

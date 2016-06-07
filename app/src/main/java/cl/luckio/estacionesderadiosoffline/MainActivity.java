@@ -2,11 +2,13 @@ package cl.luckio.estacionesderadiosoffline;
 
 import android.Manifest;
 import android.app.SearchManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -31,11 +33,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private ListView lvRadios;
     private String listaRadios[];
     private String status[];
-    private Integer[] imgid = {
-            R.drawable.biobio,
-            R.drawable.adn,
-            R.drawable.digital
-    };
+    private Integer imgid[];
 
     public double latitude;
     public double longitude;
@@ -97,10 +95,11 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             }, 10);
             return;
         } else {
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 15000, 15, locationListener);
+            //locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 15000, 15, locationListener);
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 15000, 15, locationListener);
         }
     }
+
 
     private void updateCampos(SQLiteDatabase db) {
         if (db != null) {
@@ -109,12 +108,14 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             String txtStatus;
 
             listaRadios = new String[c.getCount()];
+            imgid = new Integer[c.getCount()];
             status = new String[c.getCount()];
             ResultsHelper resultsHelper;
 
             if (c.moveToFirst()) {
                 for (int i = 0; i < c.getCount(); i++) {
-                    listaRadios[i] = c.getString(1);
+                    listaRadios[i] = c.getString(2);
+                    imgid[i] = this.getResources().getIdentifier(c.getString(1), "drawable", this.getPackageName());
 
                     if (c_.moveToFirst()) {
                         for (int z = 0; z < c_.getCount(); z++) {
@@ -153,11 +154,13 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
             listaRadios = new String[c.getCount()];
             status = new String[c.getCount()];
+            imgid = new Integer[c.getCount()];
             ResultsHelper resultsHelper;
 
             if (c.moveToFirst()) {
                 for (int i = 0; i < c.getCount(); i++) {
-                    listaRadios[i] = c.getString(1);
+                    listaRadios[i] = c.getString(2);
+                    imgid[i] = this.getResources().getIdentifier(c.getString(1), "drawable", this.getPackageName());
 
                     if (c_.moveToFirst()) {
                         for (int z = 0; z < c_.getCount(); z++) {
