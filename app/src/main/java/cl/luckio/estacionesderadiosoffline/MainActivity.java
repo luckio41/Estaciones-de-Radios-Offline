@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             }, 10);
             return;
         } else {
-            //locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 15000, 15, locationListener);
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 15000, 15, locationListener);
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 15000, 15, locationListener);
         }
     }
@@ -139,7 +139,10 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         lvRadios.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ShowResults(position, view);
+                Object obj = parent.getAdapter().getItem(position);
+                String name = String.valueOf(obj);
+
+                ShowResults(name, view);
             }
         });
 
@@ -179,12 +182,15 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             }
         }
 
-        RadiosListAdapter adapter = new RadiosListAdapter(this, listaRadios, status, imgid);
+        final RadiosListAdapter adapter = new RadiosListAdapter(this, listaRadios, status, imgid);
         lvRadios = (ListView) findViewById(R.id.lvRadios);
         lvRadios.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ShowResults(position, view);
+                Object obj = parent.getAdapter().getItem(position);
+                String name = String.valueOf(obj);
+
+                ShowResults(name, view);
             }
         });
 
@@ -219,7 +225,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         }
     }
 
-    private void ShowResults(int position, View view) {
+    private void ShowResults(String name, View view) {
         Intent i = new Intent(this, ResultsActivity.class);
         double _latitude = 0;
         double _longitude = 0;
@@ -236,7 +242,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             }
         }
 
-        i.putExtra("position", position);
+        i.putExtra("name", name);
         i.putExtra("latitude", _latitude);
         i.putExtra("longitude", _longitude);
         startActivity(i);

@@ -32,7 +32,7 @@ public class ResultsActivity extends AppCompatActivity {
     private String frequency;
     private double _latitude;
     private double _longitude;
-    private int position;
+    private String name;
     private ProgressBar progressBar;
     private int idCity;
     private int idRadio;
@@ -47,7 +47,7 @@ public class ResultsActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         _latitude = extras.getDouble("latitude");
         _longitude = extras.getDouble("longitude");
-        position = extras.getInt("position");
+        name = extras.getString("name");
 
         tvCity = (TextView) findViewById(R.id.tvCity);
         tvFrequency = (TextView) findViewById(R.id.tvFrequency);
@@ -65,7 +65,7 @@ public class ResultsActivity extends AppCompatActivity {
                     "ON f.ID_City = c.ID_Cities " +
                     "INNER JOIN Stations s " +
                     "ON f.ID_Station = s.ID " +
-                    "WHERE s.ID = " + (position + 1) + " " +
+                    "WHERE s.Name = '" + name+ "' " +
                     "AND " + _latitude + " <= c.North " +
                     "AND " + _latitude + " >= c.South " +
                     "AND " + _longitude + " >= c.West " +
