@@ -36,7 +36,7 @@ public class SplashActivity extends AppCompatActivity {
         EasySplashScreen config = new EasySplashScreen(SplashActivity.this)
                 .withFullScreen()
                 .withTargetActivity(MainActivity.class)
-                .withSplashTimeOut(4000)
+                .withSplashTimeOut(2000)
                 .withBackgroundResource(android.R.color.holo_orange_dark)
                 .withHeaderText("")
                 .withFooterText("Luckio Software 2016")

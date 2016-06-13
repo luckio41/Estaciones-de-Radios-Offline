@@ -1,6 +1,8 @@
 package cl.luckio.estacionesderadiosoffline;
 
 import android.Manifest;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -8,12 +10,12 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -25,6 +27,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
 
@@ -34,19 +37,35 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private String listaRadios[];
     private String status[];
     private Integer imgid[];
-
     public double latitude;
     public double longitude;
-
     private ListView lista;
-    // Init SqlHelper
     private SqlHelper sqlHelper;
     private SQLiteDatabase db;
+
+    NotificationCompat.Builder notification;
+    private static final int uniqueID = 12345;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        notification = new NotificationCompat.Builder(this);
+        notification.setAutoCancel(true);
+        notification.setSmallIcon(R.drawable.ic_stat_action_settings_input_antenna);
+        notification.setTicker("Buscando...");
+        notification.setWhen(System.currentTimeMillis());
+        notification.setContentTitle("Buscador de Radios Offline");
+        notification.setContentText("Buscando...");
+
+        Intent intent = new Intent(this, MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        notification.setContentIntent(pendingIntent);
+
+        //Notification Manager
+        NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        nm.notify(uniqueID, notification.build());
 
         sqlHelper = new SqlHelper(this, "ESTACIONESDB", null, 1);
         db = sqlHelper.getWritableDatabase();
@@ -61,7 +80,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             public void onLocationChanged(Location location) {
                 latitude = location.getLatitude();
                 longitude = location.getLongitude();
-                location.getProvider();
 
                 if (db != null) {
                     String strUpdate = "UPDATE data_temp SET Latitud = " + latitude + ", Longitud = " + longitude + " WHERE rowid = 1;";
@@ -95,8 +113,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             }, 10);
             return;
         } else {
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 15000, 15, locationListener);
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 15000, 15, locationListener);
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 15, locationListener);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 15, locationListener);
         }
     }
 
